@@ -1,0 +1,14 @@
+{
+  "name": "zeitbook-backend",
+  "version": "1.0.0",
+  "description": "Backend for Zeitbook",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "firebase-admin": "^5.4.3"
+  },
+  "author": "Zeitspace Inc.",
+  "license": "ISC"
+}
