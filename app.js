@@ -21,10 +21,15 @@ app.get('/posts', (req, res) => {
 });
 
 app.post('/posts', (req, res) => {
-    functions.addPost(req.body).then((response, error) => {
+    functions.addPost(req.body).then(response => {
         res.send(response);
-    })
-    .catch(err => res.err(err));
+    });
+});
+
+app.get('/posts/:postID', (req, res) => {
+    functions.getPostAndComments(req.params.postID).then(response => {
+        res.send(response);
+    });
 });
 
 app.listen(3000, () => {
