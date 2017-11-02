@@ -9,7 +9,7 @@ var db = admin.firestore();
 var postsRef = db.collection('posts');
 
 function formatResponse(obj) {
-    return Object.assign(obj.data(), { id: obj.id })
+    return Object.assign(obj.data(), { id: obj.id });
 }
 
 function getAllPosts() {
