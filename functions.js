@@ -12,10 +12,9 @@ function getAllPosts() {
     var allPosts = [];
     return postsRef.get().then(snapshot => {
         snapshot.forEach(doc => {
-            allPosts.push({
-                id: doc.id,
-                data: doc.data()
-            });
+            let data = doc.data();
+            delete data.comments;
+            allPosts.push(Object.assign(data, { id: doc.id }));
         });
         return allPosts;
     })
