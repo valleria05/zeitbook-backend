@@ -28,21 +28,21 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 * **Data Params**
 
-	None
+  None
 
 * **Success Response:**
 
   * **Code:** 200 <br />
     **Content:**
-		```json
-			[{
-				"time": "2017-11-02T18:45:12.836Z",
-				"content":"Content",
-				"title": "Title",
-				"user":"John",
-				"id":"HVzHbCpgnSKysIsQLDAr"
-			}]
-		```
+    ```
+      [{
+        "time": "2017-11-02T18:45:12.836Z",
+        "content":"Content",
+        "title": "Title",
+        "user":"John",
+        "id":"HVzHbCpgnSKysIsQLDAr"
+      }]
+    ```
 
 **Add a new posts**
 ----
@@ -62,20 +62,20 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 * **Data Params**
 
-	`title=[string]`
-	`content=[string]`
-	`user=[string]`
+  `title=[string]`
+  `content=[string]`
+  `user=[string]`
 
 * **Success Response:**
 
   * **Code:** 200 <br />
     **Content:**
-		```json
-			{
-				"time": "2017-11-02T18:45:12.836Z",
-				"content":"Content",
-				"title": "Title",
-				"user":"John",
-				"id":"HVzHbCpgnSKysIsQLDAr"
-			}
-		```
+    ```
+      {
+        "time": "2017-11-02T18:45:12.836Z",
+        "content":"Content",
+        "title": "Title",
+        "user":"John",
+        "id":"HVzHbCpgnSKysIsQLDAr"
+      }
+    ```
