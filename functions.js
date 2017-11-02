@@ -20,7 +20,6 @@ function getAllPosts() {
             delete data.comments;
             allPosts.push(Object.assign(data, { id: doc.id }));
         });
-        console.log(allPosts);
         return allPosts;
     })
     .catch(err => {
