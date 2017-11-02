@@ -1,17 +1,10 @@
-
 var admin = require("firebase-admin");
 
 var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://zeitspace-forum.firebaseio.com"
+    credential: admin.credential.cert(serviceAccount),
 });
 
-var db = admin.database();
-var ref = db.ref();
-var postsRef = ref.child("posts");
-
-ref.once("value", function(snapshot) {
-    console.log(snapshot.val());
-});
+var db = admin.firestore();
+var postsRef = db.collection('posts');
