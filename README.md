@@ -10,7 +10,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 ## Api
 
-**Show a list of posts**
+**Return an object with list of posts**
 ----
   Returns json data contains a list of posts.
 
@@ -77,5 +77,46 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "title": "Title",
         "user":"John",
         "id":"HVzHbCpgnSKysIsQLDAr"
+      }
+    ```
+**Return a post object with comments**
+----
+  Returns json data contains a post and all of its comments.
+
+* **URL**
+
+  /posts/:postId
+
+* **Method:**
+
+  `GET`
+
+*  **URL Params**
+
+  None
+
+* **Data Params**
+
+  None
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```
+      {
+        "time": "2017-11-02T18:45:12.836Z",
+        "content":"Content",
+        "title": "Title",
+        "user":"John",
+        "id":"HVzHbCpgnSKysIsQLDAr"
+        "comments": [
+          {
+            "user": "John",
+            "time": "2017-11-02T19:44:32.836Z",
+            "comment": "Post comment",
+            "id": "HDzHbCpgnSKysIsQLDBr"
+          }
+        ]
       }
     ```
