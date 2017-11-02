@@ -10,7 +10,7 @@ var postsRef = db.collection('posts');
 
 function getAllPosts() {
     var allPosts = [];
-    return postsRef.get().then(snapshot => {
+    return postsRef.orderBy('time').get().then(snapshot => {
         snapshot.forEach(doc => {
             let data = doc.data();
             delete data.comments;
@@ -19,8 +19,15 @@ function getAllPosts() {
         return allPosts;
     })
     .catch(err => {
-        console.log(err);
+        return err;
     });
 };
 
-module.exports = {getAllPosts};
+function addPost(postData) {
+    const {title, content, user, time = new Date()} = postData;
+    return postsRef.add({title, content, user, time}).then(ref => {
+        return Object.assign({title, content, user, time}, { id: ref.id });
+    });
+};
+
+module.exports = {getAllPosts, addPost};

@@ -6,14 +6,25 @@ var functions = require('./functions.js');
 var app = express();
 var router = express.Router();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.get('/', (req, res) => {
     res.send('Use the /posts endpoint');
 });
 
 app.get('/posts', (req, res) => {
-    functions.getAllPosts().then(post => {
-        res.send(post);
-    });
+    functions.getAllPosts().then(response => {
+        res.send(response);
+    })
+    .catch(err => res.err(err));
+});
+
+app.post('/posts', (req, res) => {
+    functions.addPost(req.body).then((response, error) => {
+        res.send(response);
+    })
+    .catch(err => res.err(err));
 });
 
 app.listen(3000, () => {
