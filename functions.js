@@ -8,10 +8,6 @@ admin.initializeApp({
 var db = admin.firestore();
 var postsRef = db.collection('posts');
 
-function formatResponse(obj) {
-    return Object.assign(obj.data(), { id: obj.id });
-}
-
 function getAllPosts() {
     var allPosts = [];
     return postsRef.orderBy('time').get().then(snapshot => {
