@@ -12,7 +12,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 **Return an object with list of posts**
 ----
-  Returns json data contains a list of posts.
+  Returns a json object contains a list of posts.
 
 * **URL**
 
@@ -46,7 +46,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 **Add a new posts**
 ----
-  Add a new post on the database and return the post object
+  Add a new post on the database and return a post object
 
 * **URL**
 
@@ -81,7 +81,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
     ```
 **Return a post object with comments**
 ----
-  Returns json data contains a post and all of its comments.
+  Returns a json object contains a post and all of its comments.
 
 * **URL**
 
@@ -118,5 +118,40 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
             "id": "HDzHbCpgnSKysIsQLDBr"
           }
         ]
+      }
+    ```
+
+**Add new comment**
+----
+  Add a new comment to a post and returns a json object contains the comment.
+
+* **URL**
+
+  /posts/:postId/comments
+
+* **Method:**
+
+  `POST`
+
+*  **URL Params**
+
+  None
+
+* **Data Params**
+
+  `id=[string]`
+  `comment: [string]`
+  `user: [string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```
+      {
+        "user": "John",
+        "time": "2017-11-02T19:44:32.836Z",
+        "comment": "Post comment",
+        "id": "HDzHbCpgnSKysIsQLDBr"
       }
     ```
