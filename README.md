@@ -2,6 +2,8 @@
 
 The backend application for Zeitspace's workshop on Progressive Web Apps.
 
+[https://zeitbook.herokuapp.com/](https://zeitbook.herokuapp.com/)
+
 ## Setup
 
 1. In your command line, navigate to the directory containing the source code for this starter application.
