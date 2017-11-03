@@ -1,5 +1,6 @@
 var admin = require("firebase-admin");
 var serviceAccount = require("./serviceAccountKey.json");
+var ValidationError = require("./ValidationError");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -74,11 +75,11 @@ function getPostAndComments(postID) {
 }
 
 function addComment(postId, comment) {
-    if (!(postId && comment.comment && comment.user)) return Promise.reject(new Error("Object requires comment and user"));
+    if (!(postId && comment.comment && comment.user)) return Promise.reject(new ValidationError("Object requires comment and user"));
 
     return getPost(postId).then((post) => {
         commentsRef = postsRef.doc(postId).collection("comments");
-        const commentData = (({ comment, user, time }) => ({ comment, user, time: new Date() }))(comment);
+        const commentData = (({ comment, user }) => ({ comment, user, time: new Date() }))(comment);
         return commentsRef.add(commentData).then(ref => {
             return Object.assign(commentData, { id: ref.id });
         });

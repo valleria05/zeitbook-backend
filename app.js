@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var functions = require('./functions.js');
+var ValidationError = require("./ValidationError");
 
 // Express
 var app = express();
@@ -44,7 +45,8 @@ app.post('/posts/:postId/comment', (req, res) => {
     functions.addComment(req.params.postId, req.body).then((comment) => {
         res.send( comment );
     }).catch(err => {
-        res.status(500).json({ error: err.message.toString() });
+        var errorCode = err instanceof ValidationError ? 400 : 404;
+        res.status(errorCode).json({ error: err.message });
     });
 });
 
