@@ -17,7 +17,9 @@ app.get('/posts', (req, res) => {
     functions.getAllPosts().then(response => {
         res.send(response);
     })
-    .catch(err => res.err(err));
+    .catch(err => {
+        throw new Error(err)
+    });
 });
 
 app.post('/posts', (req, res) => {

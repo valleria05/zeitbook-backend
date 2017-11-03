@@ -24,10 +24,14 @@ function getAllPosts() {
 };
 
 function addPost(postData) {
-    const {title, content, user, time = new Date()} = postData;
-    return postsRef.add({title, content, user, time}).then(ref => {
-        return Object.assign({title, content, user, time}, { id: ref.id });
-    });
+    if (postData.title && postData.content && postData.user) {
+        const {title, content, user, time = new Date()} = postData;
+        return postsRef.add({title, content, user, time}).then(ref => {
+            return Object.assign({title, content, user, time}, { id: ref.id });
+        });
+    } else {
+        throw new Error("Object requires title, content and user");
+    }
 };
 
 module.exports = {getAllPosts, addPost};
