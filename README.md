@@ -79,6 +79,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "id":"HVzHbCpgnSKysIsQLDAr"
       }
     ```
+
 **Return a post object with comments**
 ----
   Returns a json object contains a post and all of its comments.
@@ -121,6 +122,11 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
       }
     ```
 
+* **Error Response:**
+
+  * **Code:** 400 NOT FOUND <br />
+    **Content:** `{ error : "Bad request: No post was found with ID [postId] }`
+
 **Add new comment**
 ----
   Add a new comment to a post and returns a json object contains the comment.
@@ -155,3 +161,8 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "id": "HDzHbCpgnSKysIsQLDBr"
       }
     ```
+
+* **Error Response:**
+
+  * **Code:** 400 NOT FOUND <br />
+    **Content:** `{ error : "Bad request: No post was found with ID [postId] }`
