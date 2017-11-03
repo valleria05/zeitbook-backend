@@ -17,7 +17,9 @@ app.get('/posts', (req, res) => {
     functions.getAllPosts().then(response => {
         res.send(response);
     })
-    .catch(err => res.err(err));
+    .catch(err => {
+        res.status(400).json({ error: err.toString() });
+    });
 });
 
 app.post('/posts', (req, res) => {
@@ -29,6 +31,9 @@ app.post('/posts', (req, res) => {
 app.get('/posts/:postID', (req, res) => {
     functions.getPostAndComments(req.params.postID).then(response => {
         res.send(response);
+    })
+    .catch(err => {
+        res.status(400).json({ error: err.toString() });
     });
 });
 

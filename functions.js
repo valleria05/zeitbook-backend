@@ -9,7 +9,11 @@ var db = admin.firestore();
 var postsRef = db.collection('posts');
 
 function formatData(doc) {
-    return Object.assign(doc.data(), { id: doc.id } );
+    if (!doc.data()) {
+        return;
+    } else {
+        return Object.assign(doc.data(), { id: doc.id } );
+    }
 }
 
 function getAllPosts() {
@@ -23,7 +27,7 @@ function getAllPosts() {
         return allPosts;
     })
     .catch(err => {
-        return err;
+        throw new Error(err);
     });
 };
 
@@ -36,32 +40,35 @@ function addPost(postData) {
 
 function getComments(postID) {
     commentsRef = postsRef.doc(postID).collection("comments");
-    var allComments = [];
-    return commentsRef.orderBy('time').get().then(snapshot => {
-        snapshot.forEach(doc => {
-            allComments.push(formatData(doc));
+    if (commentsRef.exists) {
+        var allComments = [];
+        return commentsRef.orderBy('time').get().then(snapshot => {
+            snapshot.forEach(doc => {
+                allComments.push(formatData(doc));
+            });
+            return allComments;
         });
-        return allComments;
-    })
-    .catch(err => {
-        return err;
-    });
+    }
 }
 
 function getPost(postID) {
     return postsRef.doc(postID).get().then(ref => {
-        return formatData(ref);
-    })
-    .catch(err => {
-        return err;
+        if (ref.exists) {
+            return formatData(ref);
+        }
     });
 }
 
 function getPostAndComments(postID) {
-    return getPost(postID).then(post => {
-        return getComments(postID).then(comments => {
+    return getPost(postID)
+    .then(post => {
+        return getComments(postID)
+        .then(comments => {
             return Object.assign(post, { comments });
         });
+    })
+    .catch(err => {
+        throw new Error("Bad request: No post was found with ID " + postID);
     });
 }
 
