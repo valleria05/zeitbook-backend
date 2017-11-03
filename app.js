@@ -50,6 +50,8 @@ app.post('/posts/:postId/comment', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    winston.log('info', 'Listening on http://localhost:3000/');
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    winston.log('info', `Listening on http://localhost:${port}/`);
 });
