@@ -8,7 +8,8 @@
     "npm": "5.3.0"
   },
   "scripts": {
-    "start": "node node_modules/nodemon/bin/nodemon.js app.js",
+    "start": "node app.js",
+    "dev:server": "node node_modules/nodemon/bin/nodemon.js app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/eslint/bin/eslint.js \"./**/*.js\"",
     "lint:fix": "./node_modules/eslint/bin/eslint.js --fix \"./**/*.js\""

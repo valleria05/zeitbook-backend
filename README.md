@@ -5,7 +5,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 ## Setup
 
 1. In your command line, navigate to the directory containing the source code for this starter application.
-1. Run `npm install`, then `npm start`.
+1. Run `npm install`, then `npm run dev:server`.
 1. The server will start responding on [localhost:3000](localhost:3000).
 
 ## Api
