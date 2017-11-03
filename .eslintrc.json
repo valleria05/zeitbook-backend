@@ -1,0 +1,12 @@
+{
+    "extends": "airbnb-base",
+    "rules": {
+        "arrow-parens": ["error", "always"],
+        "indent": ["error", 4],
+        "func-names": ["off"],
+        "function-paren-newline": ["error", "consistent"],
+        "max-len": ["off"],
+        "no-restricted-globals": ["off"],
+        "no-use-before-define": ["off"]
+    }
+}

@@ -1,12 +1,12 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var cors = require('cors');
-var functions = require('./functions.js');
-var ValidationError = require("./ValidationError");
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const functions = require('./functions.js');
+const ValidationError = require('./ValidationError');
+const winston = require('winston');
 
 // Express
-var app = express();
-var router = express.Router();
+const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -18,38 +18,38 @@ app.get('/', (req, res) => {
 });
 
 app.get('/posts', (req, res) => {
-    functions.getAllPosts().then(response => {
+    functions.getAllPosts().then((response) => {
         res.send(response);
     })
-    .catch(err => {
-        res.status(400).json({ error: err.toString() });
-    });
+        .catch((err) => {
+            res.status(400).json({ error: err.toString() });
+        });
 });
 
 app.post('/posts', (req, res) => {
-    functions.addPost(req.body).then(response => {
+    functions.addPost(req.body).then((response) => {
         res.send(response);
     });
 });
 
 app.get('/posts/:postID', (req, res) => {
-    functions.getPostAndComments(req.params.postID).then(response => {
+    functions.getPostAndComments(req.params.postID).then((response) => {
         res.send(response);
     })
-    .catch(err => {
-        res.status(400).json({ error: err.toString() });
-    });
+        .catch((err) => {
+            res.status(400).json({ error: err.toString() });
+        });
 });
 
 app.post('/posts/:postId/comment', (req, res) => {
     functions.addComment(req.params.postId, req.body).then((comment) => {
-        res.send( comment );
-    }).catch(err => {
-        var errorCode = err instanceof ValidationError ? 400 : 404;
+        res.send(comment);
+    }).catch((err) => {
+        const errorCode = err instanceof ValidationError ? 400 : 404;
         res.status(errorCode).json({ error: err.message });
     });
 });
 
 app.listen(3000, () => {
-    console.log('Server started on port 3000');
+    winston.log('info', 'Listening on http://localhost:3000/');
 });
