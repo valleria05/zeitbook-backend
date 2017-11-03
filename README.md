@@ -62,9 +62,9 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 * **Data Params**
 
-  `title=[string]`
-  `content=[string]`
-  `user=[string]`
+  `title: [string]`
+  `content: [string]`
+  `user: [string]`
 
 * **Success Response:**
 
@@ -145,7 +145,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 * **Data Params**
 
-  `id=[string]`
+  `id: [string]`
   `comment: [string]`
   `user: [string]`
 
