@@ -69,4 +69,16 @@ function getPostAndComments(postID) {
     })
 }
 
-module.exports = {getAllPosts, addPost, getPostAndComments};
+function addComment(postId, comment) {
+    if (!(postId && comment.comment && comment.user)) return Promise.reject(new Error("Object requires comment and user"));
+
+    return getPost(postId).then((post) => {
+        commentsRef = postsRef.doc(postId).collection("comments");
+        const commentData = (({ comment, user, time }) => ({ comment, user, time: new Date() }))(comment);
+        return commentsRef.add(commentData).then(ref => {
+            return Object.assign(commentData, { id: ref.id });
+        });
+    });
+};
+
+module.exports = { getAllPosts, addPost, getPostAndComments, addComment };

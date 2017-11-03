@@ -40,6 +40,14 @@ app.get('/posts/:postID', (req, res) => {
     });
 });
 
+app.post('/posts/:postId/comment', (req, res) => {
+    functions.addComment(req.params.postId, req.body).then((comment) => {
+        res.send( comment );
+    }).catch(err => {
+        res.status(500).json({ error: err.message.toString() });
+    });
+});
+
 app.listen(3000, () => {
     console.log('Server started on port 3000');
 });
