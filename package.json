@@ -4,7 +4,7 @@
   "description": "Backend for Zeitbook",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node node_modules/nodemon/bin/nodemon.js app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -14,5 +14,8 @@
     "firebase-admin": "^5.4.3"
   },
   "author": "Zeitspace Inc.",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
 }
