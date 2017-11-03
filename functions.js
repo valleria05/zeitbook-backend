@@ -59,7 +59,7 @@ function getPost(postID) {
         if (ref.exists) {
             return formatData(ref);
         } else {
-            throw new Error("Post not found");
+            throw new Error("Bad request: No post with ID " + postID);
         }
     });
 }
