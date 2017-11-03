@@ -9,10 +9,10 @@ var db = admin.firestore();
 var postsRef = db.collection('posts');
 
 function formatData(doc) {
-    if (!doc.data()) {
-        return;
-    } else {
+    if (doc.data()) {
         return Object.assign(doc.data(), { id: doc.id } );
+    } else {
+        return;
     }
 }
 
@@ -39,22 +39,23 @@ function addPost(postData) {
 };
 
 function getComments(postID) {
-    commentsRef = postsRef.doc(postID).collection("comments");
-    if (commentsRef.exists) {
-        var allComments = [];
-        return commentsRef.orderBy('time').get().then(snapshot => {
-            snapshot.forEach(doc => {
-                allComments.push(formatData(doc));
-            });
-            return allComments;
+    const commentsRef = postsRef.doc(postID).collection("comments");
+    var allComments = [];
+    return commentsRef.orderBy('time').get().then(snapshot => {
+        snapshot.forEach(doc => {
+            allComments.push(formatData(doc));
         });
-    }
+        return allComments;
+    });
 }
 
 function getPost(postID) {
-    return postsRef.doc(postID).get().then(ref => {
+    const postRef = postsRef.doc(postID);
+    return postRef.get().then(ref => {
         if (ref.exists) {
             return formatData(ref);
+        } else {
+            throw new Error("Post not found");
         }
     });
 }
@@ -62,14 +63,10 @@ function getPost(postID) {
 function getPostAndComments(postID) {
     return getPost(postID)
     .then(post => {
-        return getComments(postID)
-        .then(comments => {
+        return getComments(postID).then(comments => {
             return Object.assign(post, { comments });
         });
     })
-    .catch(err => {
-        throw new Error("Bad request: No post was found with ID " + postID);
-    });
 }
 
 module.exports = {getAllPosts, addPost, getPostAndComments};
