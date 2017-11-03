@@ -32,10 +32,14 @@ function getAllPosts() {
 };
 
 function addPost(postData) {
-    const {title, content, user, time = new Date()} = postData;
-    return postsRef.add({title, content, user, time}).then(ref => {
-        return Object.assign({title, content, user, time}, { id: ref.id });
-    });
+    if (postData.title && postData.content && postData.user) {
+        const {title, content, user, time = new Date()} = postData;
+        return postsRef.add({title, content, user, time}).then(ref => {
+            return Object.assign({title, content, user, time}, { id: ref.id });
+        });
+    } else {
+        throw new Error("Object requires title, content and user");
+    }
 };
 
 function getComments(postID) {
@@ -55,7 +59,7 @@ function getPost(postID) {
         if (ref.exists) {
             return formatData(ref);
         } else {
-            throw new Error("Post not found");
+            throw new Error("Bad request: No post with ID " + postID);
         }
     });
 }
