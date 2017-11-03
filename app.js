@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var cors = require('cors');
 var functions = require('./functions.js');
 
 // Express
@@ -8,6 +9,8 @@ var router = express.Router();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 app.get('/', (req, res) => {
     res.send('Use the /posts endpoint');
