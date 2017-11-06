@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const NotFoundError = require('./NotFoundError');
 const serviceAccount = require('./serviceAccountKey.json');
 const ValidationError = require('./ValidationError');
 
@@ -25,10 +26,9 @@ function getAllPosts() {
             allPosts.push(Object.assign(data, { id: doc.id }));
         });
         return allPosts;
-    })
-        .catch((err) => {
-            throw new Error(err);
-        });
+    }).catch((err) => {
+        throw new Error(err);
+    });
 }
 
 function addPost(postData) {
@@ -42,7 +42,7 @@ function addPost(postData) {
             title, content, user, time,
         }, { id: ref.id }));
     }
-    throw new Error('Object requires title, content and user');
+    throw new ValidationError('Object requires title, content and user');
 }
 
 function getComments(postID) {
@@ -62,7 +62,7 @@ function getPost(postID) {
         if (ref.exists) {
             return formatData(ref);
         }
-        throw new Error(`Bad request: No post with ID ${postID}`);
+        throw new NotFoundError(`Bad request: No post with ID ${postID}`);
     });
 }
 
