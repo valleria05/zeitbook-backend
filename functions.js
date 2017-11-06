@@ -33,7 +33,7 @@ function getAllPosts() {
 }
 
 function addPost(postData) {
-    if (postData.title && postData.content && postData.user) {
+    if (postData.title && postData.content && postData.user && postData.token) {
         const {
             title, content, user, token, time = new Date(),
         } = postData;
@@ -42,8 +42,9 @@ function addPost(postData) {
         }).then((ref) => Object.assign({
             title, content, user, token, time,
         }, { id: ref.id }));
+    } else {
+        throw new Error ('Object requires title, content and user');
     }
-    throw new Error('Object requires title, content and user');
 }
 
 function getComments(postID) {
@@ -75,7 +76,9 @@ function getPostAndComments(postID) {
 }
 
 function addComment(postID, commentRequest) {
-    if (!(postID && commentRequest.comment && commentRequest.user)) return Promise.reject(new ValidationError('Object requires comment and user'));
+    if (!(postID && commentRequest.comment && commentRequest.user && commentRequest.token)) {
+        return Promise.reject(new ValidationError('Object requires comment and user'));
+    }
 
     return getPost(postID).then((post) => {
         const commentsRef = postsRef.doc(postID).collection('comments');
