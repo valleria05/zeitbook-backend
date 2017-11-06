@@ -42,9 +42,8 @@ function addPost(postData) {
         }).then((ref) => Object.assign({
             title, content, user, token, time,
         }, { id: ref.id }));
-    } else {
-        throw new Error ('Object requires title, content and user');
     }
+    throw new Error('Object requires title, content and user');
 }
 
 function getComments(postID) {
