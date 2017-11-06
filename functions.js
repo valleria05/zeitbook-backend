@@ -67,11 +67,10 @@ function getPost(postID) {
 }
 
 function getPostAndComments(postID) {
-    return getPost(postID).then((post) => {
+    return getPost(postID).then((doc) => {
+        const post = doc;
         delete post.token;
-        return getComments(postID).then((comments) => {
-            return Object.assign(post, { comments });
-        });
+        return getComments(postID).then((comments) => Object.assign(post, { comments }));
     });
 }
 
@@ -80,58 +79,56 @@ function addComment(postID, commentRequest) {
 
     return getPost(postID).then((post) => {
         const commentsRef = postsRef.doc(postID).collection('comments');
-        const commentData = (({ comment, user, token }) => ({ comment, user, token, time: new Date() }))(commentRequest);
+        const commentData = (({ comment, user, token }) => ({
+            comment, user, token, time: new Date(),
+        }))(commentRequest);
         // List of commenters' tokens
         const tokens = [];
-        commentsRef.get().then(snapshot => {
-            snapshot.forEach(doc => {
+        commentsRef.get().then((snapshot) => {
+            snapshot.forEach((doc) => {
                 // Add commenter's token to list of tokens if it hasn't been added already
-                commenterToken = doc.data().token;
-                if (!tokens.find(elem => elem === commenterToken)) {
+                const commenterToken = doc.data().token;
+                if (!tokens.find((elem) => elem === commenterToken)) {
                     tokens.push(doc.data().token);
-                };
+                }
             });
             // Send notifications
-            sendNotificationToPoster(post.token, commentData);
-            sendNotificationToCommenters(tokens, commentData);
+            sendNotifications(post.token, tokens, commentData);
         });
-        return commentsRef.add(commentData).then((ref) => {
-            return Object.assign(commentData, { id: ref.id });
-        });
+        return commentsRef.add(commentData).then((ref) => Object.assign(commentData, { id: ref.id }));
     });
 }
 
-function sendNotificationToPoster(token, commentData) {
-    const payload = {
+function sendNotifications(posterToken, commenterTokens, commentData) {
+    const posterPayload = {
         notification: {
-            title: `$commentData.user commented on your post`,
-            body: `$commentData.user commented on your post: "$comment"`
-        }
+            title: `${commentData.user} commented on your post`,
+            body: `${commentData.user} commented on your post: "${commentData.comment}"`,
+        },
     };
 
-    admin.messaging().sendToDevice(token, payload)
-    .then(res => {
-        console.log("Notification successfully sent:", res);
-    })
-    .catch(err => {
-        console.log("Error sending notification:", err);
-    });
-}
-
-function sendNotificationToCommenters(tokens, commentData) {
-    const payload = {
+    const commenterPayload = {
         notification: {
-            title: `$commentData.user also commented on a post`,
-            body: `$commentData.user also commented on a post: "$comment"`
-        }
-    }
-    admin.messaging().sendToDevice(tokens, payload)
-    .then(res => {
-        console.log("Notification successfully sent:", res);
-    })
-    .catch(err => {
-        console.log("Error sending notification:", err);
-    });
+            title: `${commentData.user} also commented on a post`,
+            body: `${commentData.user} also commented on a post: "${commentData.comment}"`,
+        },
+    };
+
+    admin.messaging().sendToDevice(posterToken, posterPayload)
+        .then((res) => {
+            console.log('Notification successfully sent:', res);
+        })
+        .catch((err) => {
+            console.log('Error sending notification:', err);
+        });
+
+    admin.messaging().sendToDevice(commenterTokens, commenterPayload)
+        .then((res) => {
+            console.log('Notification successfully sent:', res);
+        })
+        .catch((err) => {
+            console.log('Error sending notification:', err);
+        });
 }
 
 module.exports = {
