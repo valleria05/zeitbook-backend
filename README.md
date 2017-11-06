@@ -75,10 +75,11 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
     **Content:**
     ```
       {
-        "time": "2017-11-02T18:45:12.836Z",
         "content":"Content",
         "title": "Title",
-        "user":"John",
+        "user": "John",
+        "token": "123123",
+        "time": "2017-11-02T18:45:12.836Z",
         "id":"HVzHbCpgnSKysIsQLDAr"
       }
     ```
