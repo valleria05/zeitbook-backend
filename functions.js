@@ -11,7 +11,7 @@ const postsRef = db.collection('posts');
 
 function formatData(doc) {
     if (doc.data()) {
-        data = Object.assign(doc.data(), { id: doc.id });
+        const data = Object.assign(doc.data(), { id: doc.id });
         delete data.token;
         return data;
     }
@@ -91,7 +91,7 @@ function addComment(postID, commentRequest) {
             snapshot.forEach((doc) => {
                 // Add commenter's token to list of tokens if it hasn't been added already
                 const commenterToken = doc.data().token;
-                if (tokens.indexOf(commenterToken) == -1) {
+                if (tokens.indexOf(commenterToken) === -1) {
                     tokens.push(doc.data().token);
                 }
             });
@@ -123,12 +123,12 @@ function sendNotifications(posterToken, commenterTokens, commentData) {
 
 function sendNotificationToDevice(tokens, payload) {
     admin.messaging().sendToDevice(tokens, payload)
-    .then((res) => {
-        console.log('Notification successfully sent:', res);
-    })
-    .catch((err) => {
-        console.log('Error sending notification:', err);
-    });
+        .then((res) => {
+            console.log('Notification successfully sent:', res);
+        })
+        .catch((err) => {
+            console.log('Error sending notification:', err);
+        });
 }
 
 module.exports = {
