@@ -67,6 +67,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
   `title: [string]`
   `content: [string]`
   `user: [string]`
+  `token: [string]`
 
 * **Success Response:**
 

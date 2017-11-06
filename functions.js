@@ -20,9 +20,10 @@ function getAllPosts() {
     const allPosts = [];
     return postsRef.orderBy('time').get().then((snapshot) => {
         snapshot.forEach((doc) => {
-            const data = doc.data();
+            const data = formatData(doc);
             delete data.comments;
-            allPosts.push(Object.assign(data, { id: doc.id }));
+            delete data.token;
+            allPosts.push(data);
         });
         return allPosts;
     })
@@ -34,12 +35,12 @@ function getAllPosts() {
 function addPost(postData) {
     if (postData.title && postData.content && postData.user) {
         const {
-            title, content, user, time = new Date(),
+            title, content, user, token, time = new Date(),
         } = postData;
         return postsRef.add({
-            title, content, user, time,
+            title, content, user, token, time,
         }).then((ref) => Object.assign({
-            title, content, user, time,
+            title, content, user, token, time,
         }, { id: ref.id }));
     }
     throw new Error('Object requires title, content and user');
@@ -57,10 +58,11 @@ function getComments(postID) {
 }
 
 function getPost(postID) {
-    const postRef = postsRef.doc(postID);
-    return postRef.get().then((ref) => {
+    return postsRef.doc(postID).get().then((ref) => {
         if (ref.exists) {
-            return formatData(ref);
+            const data = formatData(ref);
+            delete data.token;
+            return data;
         }
         throw new Error(`Bad request: No post with ID ${postID}`);
     });
@@ -68,16 +70,40 @@ function getPost(postID) {
 
 function getPostAndComments(postID) {
     return getPost(postID)
-        .then((post) => getComments(postID).then((comments) => Object.assign(post, { comments })));
+        .then((post) => getComments(postID).then((comments) => {
+            return Object.assign(post, { comments });
+        })
+    );
 }
 
-function addComment(postId, commentRequest) {
-    if (!(postId && commentRequest.comment && commentRequest.user)) return Promise.reject(new ValidationError('Object requires comment and user'));
+function addComment(postID, commentRequest) {
+    if (!(postID && commentRequest.comment && commentRequest.user)) return Promise.reject(new ValidationError('Object requires comment and user'));
 
-    return getPost(postId).then(() => {
-        const commentsRef = postsRef.doc(postId).collection('comments');
+    return getPost(postID).then(() => {
+        const commentsRef = postsRef.doc(postID).collection('comments');
         const commentData = (({ comment, user }) => ({ comment, user, time: new Date() }))(commentRequest);
-        return commentsRef.add(commentData).then((ref) => Object.assign(commentData, { id: ref.id }));
+        return commentsRef.add(commentData).then((ref) => {
+            const token = postsRef.doc(postID).token;
+            if (token) sendNotificationToUser(token, commentData);
+            return Object.assign(commentData, { id: ref.id });
+        });
+    });
+}
+
+function sendNotificationToUser(token, commentData) {
+    const payload = {
+        notification: {
+            title: `$commentData.user commented on your post`,
+            body: `$commentData.user commented on your post: "$commentData.comment"`
+        }
+    };
+
+    admin.messaging().sendToDevice(token, payload)
+    .then(res => {
+        console.log("Notification successfully sent:", res);
+    })
+    .catch(err => {
+        console.log("Error sending notification:", err);
     });
 }
 
