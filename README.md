@@ -82,6 +82,14 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
       }
     ```
 
+* **Error Response:**
+
+  * **Code:** 400 BAD REQUEST <br />
+    **Content:** `{ error : "Object requires title, content and user" }`
+
+  * **Code:** 404 NOT FOUND <br />
+    **Content:** `{ error : "Bad request: No post was found with ID [postId]" }`
+
 **Return a post object with comments**
 ----
   Returns a json object contains a post and all of its comments.
