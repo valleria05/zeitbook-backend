@@ -60,45 +60,72 @@ function getComments(postID) {
 function getPost(postID) {
     return postsRef.doc(postID).get().then((ref) => {
         if (ref.exists) {
-            const data = formatData(ref);
-            delete data.token;
-            return data;
+            return formatData(ref);
         }
         throw new Error(`Bad request: No post with ID ${postID}`);
     });
 }
 
 function getPostAndComments(postID) {
-    return getPost(postID)
-        .then((post) => getComments(postID).then((comments) => {
+    return getPost(postID).then((post) => {
+        delete post.token;
+        return getComments(postID).then((comments) => {
             return Object.assign(post, { comments });
-        })
-    );
+        });
+    });
 }
 
 function addComment(postID, commentRequest) {
     if (!(postID && commentRequest.comment && commentRequest.user)) return Promise.reject(new ValidationError('Object requires comment and user'));
 
-    return getPost(postID).then(() => {
+    return getPost(postID).then((post) => {
         const commentsRef = postsRef.doc(postID).collection('comments');
-        const commentData = (({ comment, user }) => ({ comment, user, time: new Date() }))(commentRequest);
+        const commentData = (({ comment, user, token }) => ({ comment, user, token, time: new Date() }))(commentRequest);
+        // List of commenters' tokens
+        const tokens = [];
+        commentsRef.get().then(snapshot => {
+            snapshot.forEach(doc => {
+                // Add commenter's token to list of tokens if it hasn't been added already
+                commenterToken = doc.data().token;
+                if (!tokens.find(elem => elem === commenterToken)) {
+                    tokens.push(doc.data().token);
+                };
+            });
+            // Send notifications
+            sendNotificationToPoster(post.token, commentData);
+            sendNotificationToCommenters(tokens, commentData);
+        });
         return commentsRef.add(commentData).then((ref) => {
-            const token = postsRef.doc(postID).token;
-            if (token) sendNotificationToUser(token, commentData);
             return Object.assign(commentData, { id: ref.id });
         });
     });
 }
 
-function sendNotificationToUser(token, commentData) {
+function sendNotificationToPoster(token, commentData) {
     const payload = {
         notification: {
             title: `$commentData.user commented on your post`,
-            body: `$commentData.user commented on your post: "$commentData.comment"`
+            body: `$commentData.user commented on your post: "$comment"`
         }
     };
 
     admin.messaging().sendToDevice(token, payload)
+    .then(res => {
+        console.log("Notification successfully sent:", res);
+    })
+    .catch(err => {
+        console.log("Error sending notification:", err);
+    });
+}
+
+function sendNotificationToCommenters(tokens, commentData) {
+    const payload = {
+        notification: {
+            title: `$commentData.user also commented on a post`,
+            body: `$commentData.user also commented on a post: "$comment"`
+        }
+    }
+    admin.messaging().sendToDevice(tokens, payload)
     .then(res => {
         console.log("Notification successfully sent:", res);
     })

@@ -152,6 +152,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
   `id: [string]`
   `comment: [string]`
   `user: [string]`
+  `token: [string]`
 
 * **Success Response:**
 
@@ -160,6 +161,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
     ```
       {
         "user": "John",
+        "token": "12345",
         "time": "2017-11-02T19:44:32.836Z",
         "comment": "Post comment",
         "id": "HDzHbCpgnSKysIsQLDBr"
