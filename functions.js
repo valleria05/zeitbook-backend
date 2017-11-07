@@ -9,10 +9,10 @@ admin.initializeApp({
 const db = admin.firestore();
 const postsRef = db.collection('posts');
 
-function formatData(doc, props) {
+function formatData(doc, propsToRemove = []) {
     if (doc.data()) {
         const data = Object.assign(doc.data(), { id: doc.id });
-        props.forEach((prop) => {
+        propsToRemove.forEach((prop) => {
             delete data[prop];
         });
         return data;
@@ -62,7 +62,7 @@ function getComments(postID) {
 function getPost(postID) {
     return postsRef.doc(postID).get().then((ref) => {
         if (ref.exists) {
-            return formatData(ref, []);
+            return formatData(ref);
         }
         throw new Error(`Bad request: No post with ID ${postID}`);
     });
@@ -96,7 +96,6 @@ function addComment(postID, commentRequest) {
                     tokens.push(doc.data().token);
                 }
             });
-            console.log(post);
             // Send notifications
             sendNotifications(post.token, tokens, commentData);
         });
