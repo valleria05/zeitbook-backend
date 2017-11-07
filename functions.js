@@ -45,7 +45,7 @@ function addPost(postData) {
             title, content, user, token, time, numComments,
         }, { id: ref.id }));
     }
-    throw new Error('Object requires title, content and user');
+    throw new Error('Object requires title, content, user and registration token');
 }
 
 function getComments(postID) {
@@ -78,7 +78,7 @@ function getPostAndComments(postID) {
 
 function addComment(postID, commentRequest) {
     if (!(postID && commentRequest.comment && commentRequest.user && commentRequest.token)) {
-        return Promise.reject(new ValidationError('Object requires comment and user'));
+        return Promise.reject(new ValidationError('Object requires comment, user and registration token'));
     }
 
     return getPost(postID).then((post) => {
