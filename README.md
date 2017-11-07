@@ -42,6 +42,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "content":"Content",
         "title": "Title",
         "user":"John",
+        "numComments": 2,
         "id":"HVzHbCpgnSKysIsQLDAr"
       }]
     ```
@@ -79,6 +80,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "title": "Title",
         "user": "John",
         "token": "123123",
+        "numComments": 0,
         "time": "2017-11-02T18:45:12.836Z",
         "id":"HVzHbCpgnSKysIsQLDAr"
       }
@@ -114,7 +116,8 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "content":"Content",
         "title": "Title",
         "user":"John",
-        "id":"HVzHbCpgnSKysIsQLDAr"
+        "id":"HVzHbCpgnSKysIsQLDAr",
+        "numComments": 2,
         "comments": [
           {
             "user": "John",
@@ -133,7 +136,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 **Add new comment**
 ----
-  Add a new comment to a post and returns a json object contains the comment.
+  Add a new comment to a post, which increments numComments by 1 and returns a json object that contains the comment.
 
 * **URL**
 

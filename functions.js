@@ -37,12 +37,12 @@ function getAllPosts() {
 function addPost(postData) {
     if (postData.title && postData.content && postData.user && postData.token) {
         const {
-            title, content, user, token, time = new Date(),
+            title, content, user, token, time = new Date(), numComments = 0,
         } = postData;
         return postsRef.add({
-            title, content, user, token, time,
+            title, content, user, token, time, numComments,
         }).then((ref) => Object.assign({
-            title, content, user, token, time,
+            title, content, user, token, time, numComments,
         }, { id: ref.id }));
     }
     throw new Error('Object requires title, content and user');
@@ -99,7 +99,15 @@ function addComment(postID, commentRequest) {
             // Send notifications
             sendNotifications(post.token, tokens, commentData);
         });
-        return commentsRef.add(commentData).then((ref) => Object.assign(commentData, { id: ref.id }));
+
+        const document = postsRef.doc(postID);
+        return commentsRef.add(commentData).then((ref) => db.runTransaction((transaction) => transaction.get(document).then((doc) => {
+            const data = doc.data();
+            transaction.update(document, {
+                numComments: data.numComments + 1,
+            });
+            return Object.assign(commentData, { id: ref.id });
+        })));
     });
 }
 
