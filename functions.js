@@ -45,7 +45,7 @@ function addPost(postData) {
             title, content, user, token, time, numComments,
         }, { id: ref.id }));
     }
-    throw new Error('Object requires title, content, user and registration token');
+    throw new ValidationError('Object requires title, content, user and registration token');
 }
 
 function getComments(postID) {
