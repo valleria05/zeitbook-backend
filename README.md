@@ -46,7 +46,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
       }]
     ```
 
-**Add a new posts**
+**Add a new post**
 ----
   Add a new post on the database and return a post object
 
