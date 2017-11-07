@@ -10,9 +10,13 @@ admin.initializeApp({
 const db = admin.firestore();
 const postsRef = db.collection('posts');
 
-function formatData(doc) {
+function formatData(doc, propsToRemove = []) {
     if (doc.data()) {
-        return Object.assign(doc.data(), { id: doc.id });
+        const data = Object.assign(doc.data(), { id: doc.id });
+        propsToRemove.forEach((prop) => {
+            delete data[prop];
+        });
+        return data;
     }
     return undefined;
 }
@@ -21,9 +25,8 @@ function getAllPosts() {
     const allPosts = [];
     return postsRef.orderBy('time').get().then((snapshot) => {
         snapshot.forEach((doc) => {
-            const data = doc.data();
-            delete data.comments;
-            allPosts.push(Object.assign(data, { id: doc.id }));
+            const data = formatData(doc, ['comments', 'token']);
+            allPosts.push(data);
         });
         return allPosts;
     }).catch((err) => {
@@ -32,17 +35,17 @@ function getAllPosts() {
 }
 
 function addPost(postData) {
-    if (postData.title && postData.content && postData.user) {
+    if (postData.title && postData.content && postData.user && postData.token) {
         const {
-            title, content, user, time = new Date(),
+            title, content, user, token, time = new Date(), numComments = 0,
         } = postData;
         return postsRef.add({
-            title, content, user, time,
+            title, content, user, token, time, numComments,
         }).then((ref) => Object.assign({
-            title, content, user, time,
+            title, content, user, token, time, numComments,
         }, { id: ref.id }));
     }
-    throw new ValidationError('Object requires title, content and user');
+    throw new ValidationError('Object requires title, content, user and registration token');
 }
 
 function getComments(postID) {
@@ -50,15 +53,14 @@ function getComments(postID) {
     const allComments = [];
     return commentsRef.orderBy('time').get().then((snapshot) => {
         snapshot.forEach((doc) => {
-            allComments.push(formatData(doc));
+            allComments.push(formatData(doc, ['token']));
         });
         return allComments;
     });
 }
 
 function getPost(postID) {
-    const postRef = postsRef.doc(postID);
-    return postRef.get().then((ref) => {
+    return postsRef.doc(postID).get().then((ref) => {
         if (ref.exists) {
             return formatData(ref);
         }
@@ -67,18 +69,75 @@ function getPost(postID) {
 }
 
 function getPostAndComments(postID) {
-    return getPost(postID)
-        .then((post) => getComments(postID).then((comments) => Object.assign(post, { comments })));
+    return getPost(postID).then((doc) => {
+        const post = doc;
+        delete post.token;
+        return getComments(postID).then((comments) => Object.assign(post, { comments }));
+    });
 }
 
-function addComment(postId, commentRequest) {
-    if (!(postId && commentRequest.comment && commentRequest.user)) return Promise.reject(new ValidationError('Object requires comment and user'));
+function addComment(postID, commentRequest) {
+    if (!(postID && commentRequest.comment && commentRequest.user && commentRequest.token)) {
+        return Promise.reject(new ValidationError('Object requires comment, user and registration token'));
+    }
 
-    return getPost(postId).then(() => {
-        const commentsRef = postsRef.doc(postId).collection('comments');
-        const commentData = (({ comment, user }) => ({ comment, user, time: new Date() }))(commentRequest);
-        return commentsRef.add(commentData).then((ref) => Object.assign(commentData, { id: ref.id }));
+    return getPost(postID).then((post) => {
+        const commentsRef = postsRef.doc(postID).collection('comments');
+        const commentData = (({ comment, user, token }) => ({
+            comment, user, token, time: new Date(),
+        }))(commentRequest);
+        // List of commenters' tokens
+        const tokens = [];
+        commentsRef.get().then((snapshot) => {
+            snapshot.forEach((doc) => {
+                // Add commenter's token to list of tokens if it hasn't been added already
+                const commenterToken = doc.data().token;
+                if (tokens.indexOf(commenterToken) === -1) {
+                    tokens.push(doc.data().token);
+                }
+            });
+            // Send notifications
+            sendNotifications(post.token, tokens, commentData);
+        });
+
+        const document = postsRef.doc(postID);
+        return commentsRef.add(commentData).then((ref) => db.runTransaction((transaction) => transaction.get(document).then((doc) => {
+            const data = doc.data();
+            transaction.update(document, {
+                numComments: data.numComments + 1,
+            });
+            return Object.assign(commentData, { id: ref.id });
+        })));
     });
+}
+
+function sendNotifications(posterToken, commenterTokens, commentData) {
+    const posterPayload = {
+        notification: {
+            title: `${commentData.user} commented on your post`,
+            body: `${commentData.user} commented on your post: "${commentData.comment}"`,
+        },
+    };
+
+    const commenterPayload = {
+        notification: {
+            title: `${commentData.user} also commented on a post`,
+            body: `${commentData.user} also commented on a post: "${commentData.comment}"`,
+        },
+    };
+
+    sendNotificationToDevice(posterToken, posterPayload);
+    sendNotificationToDevice(commenterTokens, commenterPayload);
+}
+
+function sendNotificationToDevice(tokens, payload) {
+    admin.messaging().sendToDevice(tokens, payload)
+        .then((res) => {
+            console.log('Notification successfully sent:', res);
+        })
+        .catch((err) => {
+            console.log('Error sending notification:', err);
+        });
 }
 
 module.exports = {

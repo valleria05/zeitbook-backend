@@ -14,7 +14,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 **Return an object with list of posts**
 ----
-  Returns a json object contains a list of posts.
+  Returns a JSON object containing all posts.
 
 * **URL**
 
@@ -42,13 +42,14 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "content":"Content",
         "title": "Title",
         "user":"John",
+        "numComments": 2,
         "id":"HVzHbCpgnSKysIsQLDAr"
       }]
     ```
 
-**Add a new posts**
+**Add a new post**
 ----
-  Add a new post on the database and return a post object
+  Add a new post to the database and return a JSON object containing the post
 
 * **URL**
 
@@ -67,6 +68,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
   `title: [string]`
   `content: [string]`
   `user: [string]`
+  `token: [string]`
 
 * **Success Response:**
 
@@ -74,10 +76,12 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
     **Content:**
     ```
       {
-        "time": "2017-11-02T18:45:12.836Z",
         "content":"Content",
         "title": "Title",
-        "user":"John",
+        "user": "John",
+        "token": "123123",
+        "numComments": 0,
+        "time": "2017-11-02T18:45:12.836Z",
         "id":"HVzHbCpgnSKysIsQLDAr"
       }
     ```
@@ -92,7 +96,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 **Return a post object with comments**
 ----
-  Returns a json object contains a post and all of its comments.
+  Returns a JSON object containing a post and its comments.
 
 * **URL**
 
@@ -120,7 +124,8 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
         "content":"Content",
         "title": "Title",
         "user":"John",
-        "id":"HVzHbCpgnSKysIsQLDAr"
+        "id":"HVzHbCpgnSKysIsQLDAr",
+        "numComments": 2,
         "comments": [
           {
             "user": "John",
@@ -137,9 +142,9 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
   * **Code:** 400 NOT FOUND <br />
     **Content:** `{ error : "Bad request: No post was found with ID [postId]" }`
 
-**Add new comment**
+**Add a new comment**
 ----
-  Add a new comment to a post and returns a json object contains the comment.
+  Adds a new comment to a post, increments numComments by 1 and returns a JSON object that contains the comment.
 
 * **URL**
 
@@ -158,6 +163,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
   `id: [string]`
   `comment: [string]`
   `user: [string]`
+  `token: [string]`
 
 * **Success Response:**
 
@@ -166,6 +172,7 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
     ```
       {
         "user": "John",
+        "token": "12345",
         "time": "2017-11-02T19:44:32.836Z",
         "comment": "Post comment",
         "id": "HDzHbCpgnSKysIsQLDBr"
