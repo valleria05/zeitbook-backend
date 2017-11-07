@@ -9,10 +9,12 @@ admin.initializeApp({
 const db = admin.firestore();
 const postsRef = db.collection('posts');
 
-function formatData(doc) {
+function formatData(doc, props) {
     if (doc.data()) {
         const data = Object.assign(doc.data(), { id: doc.id });
-        delete data.token;
+        props.forEach((prop) => {
+            delete data[prop];
+        });
         return data;
     }
     return undefined;
@@ -22,8 +24,7 @@ function getAllPosts() {
     const allPosts = [];
     return postsRef.orderBy('time').get().then((snapshot) => {
         snapshot.forEach((doc) => {
-            const data = formatData(doc);
-            delete data.comments;
+            const data = formatData(doc, ['comments', 'token']);
             allPosts.push(data);
         });
         return allPosts;
@@ -52,7 +53,7 @@ function getComments(postID) {
     const allComments = [];
     return commentsRef.orderBy('time').get().then((snapshot) => {
         snapshot.forEach((doc) => {
-            allComments.push(formatData(doc));
+            allComments.push(formatData(doc, ['token']));
         });
         return allComments;
     });
@@ -61,7 +62,7 @@ function getComments(postID) {
 function getPost(postID) {
     return postsRef.doc(postID).get().then((ref) => {
         if (ref.exists) {
-            return Object.assign(ref.data(), { id: ref.id });
+            return formatData(ref, []);
         }
         throw new Error(`Bad request: No post with ID ${postID}`);
     });
@@ -95,6 +96,7 @@ function addComment(postID, commentRequest) {
                     tokens.push(doc.data().token);
                 }
             });
+            console.log(post);
             // Send notifications
             sendNotifications(post.token, tokens, commentData);
         });
