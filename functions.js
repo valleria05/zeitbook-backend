@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const NotFoundError = require('./NotFoundError');
 const serviceAccount = require('./serviceAccountKey.json');
 const ValidationError = require('./ValidationError');
 
@@ -28,10 +29,9 @@ function getAllPosts() {
             allPosts.push(data);
         });
         return allPosts;
-    })
-        .catch((err) => {
-            throw new Error(err);
-        });
+    }).catch((err) => {
+        throw new Error(err);
+    });
 }
 
 function addPost(postData) {
@@ -64,7 +64,7 @@ function getPost(postID) {
         if (ref.exists) {
             return formatData(ref);
         }
-        throw new Error(`Bad request: No post with ID ${postID}`);
+        throw new NotFoundError(`Bad request: No post with ID ${postID}`);
     });
 }
 
