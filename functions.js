@@ -92,7 +92,7 @@ function addComment(postID, commentRequest) {
             snapshot.forEach((doc) => {
                 // Add commenter's token to list of tokens if it hasn't been added already
                 const commenterToken = doc.data().token;
-                if (commenterToken && tokens.indexOf(commenterToken) === -1) {
+                if ((commenterToken !== "null") && (tokens.indexOf(commenterToken) === -1)) {
                     tokens.push(doc.data().token);
                 }
             });
@@ -112,22 +112,26 @@ function addComment(postID, commentRequest) {
 }
 
 function sendNotifications(posterToken, commenterTokens, commentData) {
-    const posterPayload = {
-        notification: {
-            title: `${commentData.user} commented on your post`,
-            body: `${commentData.user} commented on your post: "${commentData.comment}"`,
-        },
-    };
+    if (posterToken !== "null") {
+        const posterPayload = {
+            notification: {
+                title: `${commentData.user} commented on your post`,
+                body: `${commentData.user} commented on your post: "${commentData.comment}"`,
+            },
+        };
+        sendNotificationToDevice(posterToken, posterPayload);
+    }
+    
+    if (commenterTokens.length != 0) {
+        const commenterPayload = {
+            notification: {
+                title: `${commentData.user} also commented on a post`,
+                body: `${commentData.user} also commented on a post: "${commentData.comment}"`,
+            },
+        };
+        sendNotificationToDevice(commenterTokens, commenterPayload);
+    }
 
-    const commenterPayload = {
-        notification: {
-            title: `${commentData.user} also commented on a post`,
-            body: `${commentData.user} also commented on a post: "${commentData.comment}"`,
-        },
-    };
-
-    sendNotificationToDevice(posterToken, posterPayload);
-    sendNotificationToDevice(commenterTokens, commenterPayload);
 }
 
 function sendNotificationToDevice(tokens, payload) {
