@@ -92,7 +92,7 @@ function addComment(postID, commentRequest) {
             snapshot.forEach((doc) => {
                 // Add commenter's token to list of tokens if it hasn't been added already
                 const commenterToken = doc.data().token;
-                if ((commenterToken !== "null") && (tokens.indexOf(commenterToken) === -1)) {
+                if ((commenterToken !== 'null') && (tokens.indexOf(commenterToken) === -1)) {
                     tokens.push(doc.data().token);
                 }
             });
@@ -112,7 +112,7 @@ function addComment(postID, commentRequest) {
 }
 
 function sendNotifications(posterToken, commenterTokens, commentData) {
-    if (posterToken !== "null") {
+    if (posterToken !== 'null') {
         const posterPayload = {
             notification: {
                 title: `${commentData.user} commented on your post`,
@@ -121,8 +121,8 @@ function sendNotifications(posterToken, commenterTokens, commentData) {
         };
         sendNotificationToDevice(posterToken, posterPayload);
     }
-    
-    if (commenterTokens.length != 0) {
+
+    if (commenterTokens.length !== 0) {
         const commenterPayload = {
             notification: {
                 title: `${commentData.user} also commented on a post`,
@@ -131,7 +131,6 @@ function sendNotifications(posterToken, commenterTokens, commentData) {
         };
         sendNotificationToDevice(commenterTokens, commenterPayload);
     }
-
 }
 
 function sendNotificationToDevice(tokens, payload) {
