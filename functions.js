@@ -92,7 +92,7 @@ function addComment(postID, commentRequest) {
             snapshot.forEach((doc) => {
                 // Add commenter's token to list of tokens if it hasn't been added already
                 const commenterToken = doc.data().token;
-                if (tokens.indexOf(commenterToken) === -1) {
+                if (commenterToken && tokens.indexOf(commenterToken) === -1) {
                     tokens.push(doc.data().token);
                 }
             });
