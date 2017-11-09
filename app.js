@@ -11,7 +11,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.send('Use the /posts endpoint');
