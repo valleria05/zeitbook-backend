@@ -1,8 +1,9 @@
 const admin = require('firebase-admin');
 const NotFoundError = require('./NotFoundError');
-const serviceAccount = require('../serviceAccountKey.json');
 const ValidationError = require('./ValidationError');
 const winston = require('winston');
+
+const serviceAccount = process.env.NODE_ENV === 'production' ? process.env.FIREBASE_KEYS : require('../serviceAccountKey.json');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
