@@ -3,6 +3,7 @@ const NotFoundError = require('./NotFoundError');
 const ValidationError = require('./ValidationError');
 const winston = require('winston');
 
+// eslint-disable-next-line import/no-unresolved
 const serviceAccount = process.env.NODE_ENV === 'production' ? process.env.FIREBASE_KEYS : require('../serviceAccountKey.json');
 
 admin.initializeApp({
