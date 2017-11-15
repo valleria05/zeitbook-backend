@@ -2,6 +2,7 @@ const admin = require('firebase-admin');
 const NotFoundError = require('./NotFoundError');
 const serviceAccount = require('../serviceAccountKey.json');
 const ValidationError = require('./ValidationError');
+const winston = require('winston');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -136,10 +137,10 @@ function sendNotifications(posterToken, commenterTokens, commentData) {
 function sendNotificationToDevice(tokens, payload) {
     admin.messaging().sendToDevice(tokens, payload)
         .then((res) => {
-            console.log('Notification successfully sent:', res);
+            winston.log('Notification successfully sent:', res);
         })
         .catch((err) => {
-            console.log('Error sending notification:', err);
+            winston.log('Error sending notification:', err);
         });
 }
 

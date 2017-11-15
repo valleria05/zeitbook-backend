@@ -4,11 +4,15 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 [https://zeitbook.herokuapp.com/](https://zeitbook.herokuapp.com/)
 
+## Setup Firebase account
+
+[Setup Firestore](./firebase-steps/setup-firestore.md)
+
 ## Setup
 
 1. In your command line, navigate to the directory containing the source code for this starter application.
 1. Run `npm install`, then `npm run dev:server`.
-1. The server will start responding on [localhost:3000](localhost:3000).
+1. The server will start responding on [localhost:3001](localhost:3001).
 
 ## Api
 
