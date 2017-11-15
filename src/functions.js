@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
 const NotFoundError = require('./NotFoundError');
-const serviceAccount = require('./serviceAccountKey.json');
+const serviceAccount = require('../serviceAccountKey.json');
 const ValidationError = require('./ValidationError');
 
 admin.initializeApp({
