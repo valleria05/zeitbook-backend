@@ -2,12 +2,10 @@ const admin = require('firebase-admin');
 const NotFoundError = require('./NotFoundError');
 const ValidationError = require('./ValidationError');
 const winston = require('winston');
-
-// eslint-disable-next-line import/no-unresolved
-const serviceAccount = process.env.NODE_ENV === 'production' ? process.env.FIREBASE_KEYS : require('../serviceAccountKey.json');
+const credentials = require('./firebase');
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert(credentials.serviceAccount),
 });
 
 const db = admin.firestore();

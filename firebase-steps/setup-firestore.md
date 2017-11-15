@@ -1,7 +1,5 @@
 ## Setup Firebase account
 
-[Talk abou Firebase]
-
 - Go to: https://console.firebase.google.com/u/0/
 
 ![](./01-firebase-console.png)
