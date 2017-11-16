@@ -2,10 +2,10 @@ const admin = require('firebase-admin');
 const NotFoundError = require('./NotFoundError');
 const ValidationError = require('./ValidationError');
 const winston = require('winston');
-const credentials = require('./firebase');
+const { serviceAccount } = require('./firebase');
 
 admin.initializeApp({
-    credential: admin.credential.cert(credentials.serviceAccount),
+    credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
