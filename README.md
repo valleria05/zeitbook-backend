@@ -4,12 +4,12 @@ The backend application for Zeitspace's workshop on Progressive Web Apps.
 
 [https://zeitbook.herokuapp.com/](https://zeitbook.herokuapp.com/)
 
-## Setup Firebase account
-
-[Setup Firestore](./firebase-steps/setup-firestore.md)
+## Setup Firebase Cloud Firestore
+A database system is required to store posts and comments. This server is configured to connect to [Firebase Cloud Firestore](https://firebase.google.com/docs/firestore/). [Here are the steps to setup Firestore](./firebase-steps/setup-firestore.md).
 
 ## Setup
 
+1. Set up Firebase Cloud Firestore (see above).
 1. In your command line, navigate to the directory containing the source code for this starter application.
 1. Run `npm install`, then `npm run dev:server`.
 1. The server will start responding on [localhost:3001](localhost:3001).

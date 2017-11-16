@@ -1,32 +1,33 @@
-## Setup Firebase account
+## Setup Firebase
 
-- Go to: https://console.firebase.google.com/u/0/
+
+- Go to: https://console.firebase.google.com/u/0/.
 
 ![](./01-firebase-console.png)
 
-- Create new project
+- Create a new project.
 
 ![](./02-create-new-project.png)
 
-- Go to project settings
+- Go to project settings.
 
 ![](./03-project-settings.png)
 
-- Go to service accounts
+- Go to service accounts.
 
 ![](./04-service-accounts.png)
 
-- Generate new keys
+- Click on `generate new private key`.
 
 ![](./05-generate-new-private-key.png)
 
-- Copy downloaded file to project root
-- Name it to serviceAccountKey.json
+- Copy downloaded file to project root. **Important**: This is your private key. Keep it secure.
+- Rename the file as `serviceAccountKey.json`.
 
-- On Firebase console, go to database
+- Go to the database tab in the Firebase console.
 
 ![](./06-database-console.png)
 
-- Enable Firestore
+- Enable Firestore.
 
 ![](./07-enable-firestore.png)
