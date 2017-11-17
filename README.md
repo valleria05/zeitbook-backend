@@ -13,6 +13,7 @@ A database system is required to store posts and comments. This server is config
 1. In your command line, navigate to the directory containing the source code for this starter application.
 1. Run `npm install`, then `npm run dev:server`.
 1. The server will start responding on [localhost:3001](localhost:3001).
+1. Optional: Follow [these steps](https://github.com/zeitspace/zeitbook-frontend#zeitbook) to set up a front-end instance of Zeitbook.
 
 ## Api
 
